@@ -15,6 +15,9 @@ Os testes foram escritos em **JavaScript** com **Cypress**, usando `cy.request` 
 ## Estrutura
 
 ```text
+.github/
+  workflows/
+    pr-tests.yml
 cypress/
   e2e/
     api/
@@ -31,9 +34,26 @@ cypress/
 cypress.config.js
 ```
 
-## Pre-requisitos
+## Pipeline no GitHub Actions
 
-A API precisa estar rodando antes da execucao dos testes.
+Todo Pull Request para a branch `main` executa automaticamente a workflow `.github/workflows/pr-tests.yml`.
+
+A pipeline faz:
+
+1. Checkout do reposititorio.
+2. Setup do Node.js 20.
+3. `npm install`.
+4. `npm run prisma:generate`.
+5. `npm run prisma:push` para preparar o SQLite a partir do schema Prisma.
+6. `npm run prisma:seed` para criar usuarios demo e catalogo inicial.
+7. `npm run build`.
+8. Sobe a API com `npm start`.
+9. Aguarda `http://localhost:3333/health` responder.
+10. Executa `npm run test:api`.
+
+## Pre-requisitos locais
+
+A API precisa estar rodando antes da execucao local dos testes.
 
 ```bash
 npm install
@@ -50,7 +70,7 @@ No Windows PowerShell:
 Copy-Item .env.example .env
 ```
 
-## Como executar
+## Como executar localmente
 
 Em outro terminal, rode:
 
