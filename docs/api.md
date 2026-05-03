@@ -77,7 +77,7 @@ Apos executar o seed:
 - Professor: `professor@example.com` / `123456`
 - Aluno: `aluno@example.com` / `123456`
 
-## Fluxo rapido para testar
+## Fluxo rapido para testar manualmente
 
 1. Login como professor em `POST /auth/login`.
 2. Use o token JWT no header `Authorization: Bearer <token>`.
@@ -88,6 +88,24 @@ Apos executar o seed:
 7. Consulte `GET /me/prescriptions`.
 8. Registre conclusao em `POST /workout-logs`.
 9. Login como professor e consulte `GET /teacher/workout-logs` e `GET /teacher/alerts`.
+
+## Testes automatizados com Cypress
+
+A suite de testes automatizados usa Cypress com JavaScript e foi organizada pela heuristica VADER.
+
+Com a API rodando, execute em outro terminal:
+
+```bash
+npm run test:api
+```
+
+Para abrir o Cypress em modo interativo:
+
+```bash
+npm run test:open
+```
+
+A estrategia completa esta em `docs/tests-vader.md`.
 
 ## Exemplo de login
 
@@ -130,4 +148,6 @@ curl -X POST http://localhost:3333/auth/login \
 - `npm run prisma:generate`: gera Prisma Client.
 - `npm run prisma:migrate -- --name init`: cria/aplica migration local.
 - `npm run prisma:seed`: popula dados iniciais.
-- `npm test`: executa testes unitarios.
+- `npm test`: executa a suite Cypress.
+- `npm run test:api`: executa os testes de API em Cypress.
+- `npm run test:open`: abre o Cypress em modo interativo.
