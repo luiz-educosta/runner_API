@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { validateWorkoutCombination, type WorkoutForValidation } from "../src/services/combinationRules";
 
-function workout(group: string, name: string, loadLevel: "leve" | "moderada" | "intensa", isAssessment = false): WorkoutForValidation {
-  return { workoutType: { group: { name }, name, isAssessment }, loadLevel };
+function workout(groupName: string, name: string, loadLevel: "leve" | "moderada" | "intensa", isAssessment = false): WorkoutForValidation {
+  return { workoutType: { group: { name: groupName }, name, isAssessment }, loadLevel };
 }
 
 describe("validateWorkoutCombination", () => {
