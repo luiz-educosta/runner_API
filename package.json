@@ -9,6 +9,7 @@
     "start": "node dist/index.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:push": "prisma db push",
     "prisma:seed": "ts-node src/db/seed.ts",
     "test": "cypress run --e2e",
     "test:api": "cypress run --e2e --spec cypress/e2e/api/**/*.cy.js",
@@ -45,7 +46,8 @@
     "prisma": "^5.22.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "wait-on": "^8.0.1"
   },
   "prisma": {
     "seed": "ts-node src/db/seed.ts"
