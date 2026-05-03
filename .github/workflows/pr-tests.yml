@@ -1,0 +1,53 @@
+name: PR Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  api-tests:
+    name: API tests with Cypress VADER
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: file:./dev.db
+      JWT_SECRET: ci-secret-with-at-least-sixteen-chars
+      JWT_EXPIRES_IN: 1d
+      PORT: 3333
+      CORS_ORIGIN: "*"
+      CYPRESS_API_URL: http://localhost:3333
+      CYPRESS_PROFESSOR_EMAIL: professor@example.com
+      CYPRESS_PROFESSOR_PASSWORD: "123456"
+      CYPRESS_ALUNO_EMAIL: aluno@example.com
+      CYPRESS_ALUNO_PASSWORD: "123456"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate Prisma client
+        run: npm run prisma:generate
+
+      - name: Prepare SQLite database
+        run: npm run prisma:push
+
+      - name: Seed database
+        run: npm run prisma:seed
+
+      - name: Build API
+        run: npm run build
+
+      - name: Run Cypress API tests
+        run: |
+          npm start &
+          npx wait-on http://localhost:3333/health
+          npm run test:api
