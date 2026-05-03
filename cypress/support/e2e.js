@@ -62,6 +62,13 @@ Cypress.Commands.add("createStudent", (teacherToken, overrides = {}) => {
     body: student
   }).then((response) => {
     expect(response.status).to.eq(201);
-    return cy.wrap({ ...response.body, plainPassword: student.password });
+
+    return cy.wrap({
+      user: response.body,
+      userId: response.body.id,
+      profile: response.body.studentProfile,
+      teacherId: response.body.studentProfile.teacherId,
+      plainPassword: student.password
+    });
   });
 });
