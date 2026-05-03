@@ -33,7 +33,7 @@ workoutsRouter.get(
     const types = await prisma.workoutType.findMany({
       where: { groupId: query.groupId, active: query.active },
       include: { group: true },
-      orderBy: [{ group: { name: "asc" } }, { name: "asc" }]
+      orderBy: { name: "asc" }
     });
     return res.json(types);
   })
