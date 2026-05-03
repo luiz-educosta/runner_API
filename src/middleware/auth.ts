@@ -1,11 +1,12 @@
 import type { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { type SignOptions } from "jsonwebtoken";
 import type { UserRole } from "@prisma/client";
 import { env } from "../config/env";
 import { HttpError } from "./error";
 
 export function signToken(user: { id: string; email: string; role: UserRole }) {
-  return jwt.sign(user, env.JWT_SECRET, { expiresIn: env.JWT_EXPIRES_IN });
+  const options: SignOptions = { expiresIn: env.JWT_EXPIRES_IN as SignOptions["expiresIn"] };
+  return jwt.sign(user, env.JWT_SECRET, options);
 }
 
 export function requireAuth(req: Request, _res: Response, next: NextFunction) {
