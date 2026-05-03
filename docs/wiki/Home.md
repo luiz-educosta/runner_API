@@ -4,6 +4,16 @@
 
 A `runner_API` e uma API para controle de exercicios de corredores. O sistema permite que professores acompanhem alunos, prescrevam treinos, consultem historico de execucao e recebam sinais simples de alerta sobre sobrecarga, dor ou fadiga.
 
+## Status da implementacao
+
+O MVP foi implementado em Node.js com TypeScript, Express, Prisma, SQLite, JWT e Swagger/OpenAPI.
+
+Documentos complementares:
+
+- Guia de execucao: `docs/api.md`
+- Swagger local: `http://localhost:3333/docs`
+- OpenAPI JSON: `http://localhost:3333/openapi.json`
+
 ## Perfis de usuario
 
 ### Professor
@@ -58,7 +68,7 @@ Responsavel por consultar os treinos prescritos, marcar treinos como concluidos 
 - Postura
 - Eficiencia de passada
 
-## Regras iniciais de combinacao
+## Regras de combinacao implementadas
 
 ### Permitidas
 
@@ -71,141 +81,34 @@ Responsavel por consultar os treinos prescritos, marcar treinos como concluidos 
 
 - Corrida intensa + fortalecimento pesado no mesmo dia.
 - Corrida intensa + fortalecimento pesado de membros inferiores.
-- Treino longo + fortalecimento intenso.
 - Teste de VO2Max ou teste de pace + treino de alta carga adicional.
 
 ### Sobrescrita pelo professor
 
-O professor podera sobrescrever determinadas restricoes com justificativa obrigatoria. Essa decisao deve ficar registrada na prescricao.
+Restricoes podem ser sobrescritas com `overrideReason`. A justificativa fica registrada em `CombinationWarning`.
 
 ## Classificacao de carga
 
-Cada treino deve possuir classificacao inicial de carga:
+Cada treino possui classificacao inicial de carga:
 
 - `leve`
 - `moderada`
 - `intensa`
 
-Essa classificacao sera usada para validar combinacoes de treino e emitir alertas de sobrecarga.
+Essa classificacao e usada para validar combinacoes de treino e emitir alertas de sobrecarga.
 
-## Entidades iniciais sugeridas
+## Entidades implementadas
 
-### User
+- `User`
+- `StudentProfile`
+- `WorkoutGroup`
+- `WorkoutType`
+- `Prescription`
+- `PrescriptionItem`
+- `WorkoutLog`
+- `CombinationWarning`
 
-Representa credenciais e perfil de acesso.
-
-Campos sugeridos:
-
-- `id`
-- `name`
-- `email`
-- `password_hash`
-- `role`: `student` ou `teacher`
-- `created_at`
-- `updated_at`
-
-### StudentProfile
-
-Representa dados esportivos do aluno.
-
-Campos sugeridos:
-
-- `id`
-- `user_id`
-- `teacher_id`
-- `birth_date`
-- `level`
-- `goal`
-- `active`
-
-### WorkoutGroup
-
-Representa os grupos principais de treino.
-
-Campos sugeridos:
-
-- `id`
-- `name`
-- `description`
-
-### WorkoutType
-
-Representa os subtipos de treino.
-
-Campos sugeridos:
-
-- `id`
-- `group_id`
-- `name`
-- `description`
-- `default_load_level`
-- `is_assessment`
-- `active`
-
-### Prescription
-
-Representa uma prescricao de treino para um aluno em uma data.
-
-Campos sugeridos:
-
-- `id`
-- `teacher_id`
-- `student_id`
-- `scheduled_date`
-- `status`
-- `created_at`
-- `updated_at`
-
-### PrescriptionItem
-
-Representa cada item de treino dentro da prescricao.
-
-Campos sugeridos:
-
-- `id`
-- `prescription_id`
-- `workout_type_id`
-- `load_level`
-- `duration_minutes`
-- `distance_km`
-- `intensity_notes`
-- `objective`
-- `notes`
-
-### WorkoutLog
-
-Representa o registro feito pelo aluno apos executar o treino.
-
-Campos sugeridos:
-
-- `id`
-- `prescription_item_id`
-- `student_id`
-- `completed_at`
-- `duration_minutes`
-- `distance_km`
-- `pace`
-- `rpe`
-- `pain_level`
-- `fatigue_level`
-- `difficulty_level`
-- `notes`
-
-### CombinationWarning
-
-Representa alertas gerados por combinacao de treinos.
-
-Campos sugeridos:
-
-- `id`
-- `prescription_id`
-- `type`
-- `message`
-- `severity`
-- `overridden`
-- `override_reason`
-
-## Endpoints iniciais sugeridos
+## Endpoints implementados
 
 ### Autenticacao
 
@@ -234,7 +137,7 @@ Campos sugeridos:
 - `GET /prescriptions`
 - `GET /prescriptions/{prescriptionId}`
 - `PATCH /prescriptions/{prescriptionId}`
-- `POST /prescriptions/{prescriptionId}/validate-combination`
+- `POST /prescriptions/validate-combination`
 
 ### Registro de treinos
 
@@ -248,7 +151,7 @@ Campos sugeridos:
 - `GET /teacher/missed-workouts`
 - `GET /teacher/alerts`
 
-## MVP
+## MVP entregue
 
 1. Login de professor e aluno.
 2. Cadastro e vinculo de alunos.
@@ -257,6 +160,8 @@ Campos sugeridos:
 5. Aluno marca treino como concluido.
 6. Professor visualiza historico dos alunos.
 7. Regras simples de combinacao para evitar sobrecarga.
+8. Swagger e guia de execucao.
+9. Testes unitarios das regras de combinacao.
 
 ## Planejamento no GitHub
 
