@@ -15,7 +15,7 @@ Criar uma API para que professores possam prescrever, acompanhar e revisar trein
 - SQLite
 - JWT
 - Swagger/OpenAPI
-- Vitest
+- Cypress com JavaScript para testes de API
 
 ## Como executar
 
@@ -37,6 +37,30 @@ A API sobe em `http://localhost:3333`.
 - Swagger UI: `http://localhost:3333/docs`
 - OpenAPI JSON: `http://localhost:3333/openapi.json`
 
+## Testes
+
+Os testes foram reestruturados em Cypress + JavaScript usando a heuristica VADER:
+
+- Verbs
+- Authorization
+- Data
+- Errors
+- Responsiveness
+
+Com a API rodando, execute:
+
+```bash
+npm run test:api
+```
+
+Para abrir o Cypress em modo interativo:
+
+```bash
+npm run test:open
+```
+
+Documentacao da estrategia: [docs/tests-vader.md](docs/tests-vader.md)
+
 ## Usuarios demo
 
 Apos executar o seed:
@@ -56,11 +80,12 @@ Apos executar o seed:
 - Registro de duracao, distancia, pace, RPE, dor, fadiga e dificuldade.
 - Painel do professor para treinos concluidos, nao realizados e alertas.
 - Swagger e documentacao inicial.
-- Testes unitarios para regras de combinacao.
+- Suite Cypress de testes de API baseada em VADER.
 
 ## Documentacao
 
 - Guia de execucao e endpoints: [docs/api.md](docs/api.md)
+- Estrategia de testes VADER: [docs/tests-vader.md](docs/tests-vader.md)
 - Documentacao inicial em formato de Wiki: [docs/wiki/Home.md](docs/wiki/Home.md)
 
 ## Epico e planejamento
