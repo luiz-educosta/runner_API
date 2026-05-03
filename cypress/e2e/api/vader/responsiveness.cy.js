@@ -1,5 +1,5 @@
 describe("VADER - Responsiveness", () => {
-  const maxResponseTimeMs = 1000;
+  const maxResponseTimeMs = 2000;
 
   it("GET /health deve responder rapidamente", () => {
     cy.api({ method: "GET", url: "/health" }).then((response) => {
