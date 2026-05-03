@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  student
+  teacher
+}
+
+enum LoadLevel {
+  leve
+  moderada
+  intensa
+}
+
+enum PrescriptionStatus {
+  scheduled
+  completed
+  missed
+  canceled
+}
+
+enum WarningSeverity {
+  info
+  alert
+  restriction
+}
+
+model User {
+  id           String          @id @default(cuid())
+  name         String
+  email        String          @unique
+  passwordHash String
+  role         UserRole
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  studentProfile StudentProfile? @relation("StudentUser")
+  teacherStudents StudentProfile[] @relation("TeacherStudents")
+  teacherPrescriptions Prescription[] @relation("TeacherPrescriptions")
+  studentPrescriptions Prescription[] @relation("StudentPrescriptions")
+  workoutLogs WorkoutLog[]
+}
+
+model StudentProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  teacherId String
+  birthDate DateTime?
+  level     String?
+  goal      String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User @relation("StudentUser", fields: [userId], references: [id])
+  teacher User @relation("TeacherStudents", fields: [teacherId], references: [id])
+}
+
+model WorkoutGroup {
+  id          String        @id @default(cuid())
+  name        String        @unique
+  description String?
+  types       WorkoutType[]
+}
+
+model WorkoutType {
+  id               String     @id @default(cuid())
+  groupId          String
+  name             String
+  description      String?
+  defaultLoadLevel LoadLevel  @default(leve)
+  isAssessment     Boolean    @default(false)
+  active           Boolean    @default(true)
+
+  group WorkoutGroup @relation(fields: [groupId], references: [id])
+  prescriptionItems PrescriptionItem[]
+
+  @@unique([groupId, name])
+}
+
+model Prescription {
+  id            String             @id @default(cuid())
+  teacherId     String
+  studentId     String
+  scheduledDate DateTime
+  status        PrescriptionStatus @default(scheduled)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  teacher  User @relation("TeacherPrescriptions", fields: [teacherId], references: [id])
+  student  User @relation("StudentPrescriptions", fields: [studentId], references: [id])
+  items    PrescriptionItem[]
+  warnings CombinationWarning[]
+}
+
+model PrescriptionItem {
+  id              String    @id @default(cuid())
+  prescriptionId  String
+  workoutTypeId   String
+  loadLevel       LoadLevel
+  durationMinutes Int?
+  distanceKm      Float?
+  intensityNotes  String?
+  objective       String?
+  notes           String?
+
+  prescription Prescription @relation(fields: [prescriptionId], references: [id], onDelete: Cascade)
+  workoutType  WorkoutType  @relation(fields: [workoutTypeId], references: [id])
+  log          WorkoutLog?
+}
+
+model WorkoutLog {
+  id                 String   @id @default(cuid())
+  prescriptionItemId String   @unique
+  studentId          String
+  completedAt        DateTime @default(now())
+  durationMinutes    Int?
+  distanceKm         Float?
+  pace               String?
+  rpe                Int?
+  painLevel          Int?
+  fatigueLevel       Int?
+  difficultyLevel    Int?
+  notes              String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  prescriptionItem PrescriptionItem @relation(fields: [prescriptionItemId], references: [id], onDelete: Cascade)
+  student          User             @relation(fields: [studentId], references: [id])
+}
+
+model CombinationWarning {
+  id             String          @id @default(cuid())
+  prescriptionId String
+  type           String
+  message        String
+  severity       WarningSeverity
+  overridden     Boolean         @default(false)
+  overrideReason String?
+  createdAt      DateTime        @default(now())
+
+  prescription Prescription @relation(fields: [prescriptionId], references: [id], onDelete: Cascade)
+}
