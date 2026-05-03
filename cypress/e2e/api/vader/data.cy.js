@@ -22,9 +22,10 @@ describe("VADER - Data", () => {
                 }).then((response) => {
                   expect(response.status).to.eq(201);
                   expect(response.body.items).to.have.length(3);
-                  expect(response.body.warnings).to.deep.include.members([
-                    Cypress.sinon.match({ type: "allowed_running_session", severity: "info" })
-                  ]);
+
+                  const allowedWarning = response.body.warnings.find((warning) => warning.type === "allowed_running_session");
+                  expect(allowedWarning).to.exist;
+                  expect(allowedWarning.severity).to.eq("info");
                 });
               });
             });
